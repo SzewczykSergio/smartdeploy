@@ -6,8 +6,8 @@ app = FastAPI()
 @app.get("/")
 def home():
     return {
-        "message": "Hello from your DevOps app 🚀",
-        "hostname": socket.gethostname()
+    "message": "Hello from your DevOps app v2",
+    "hostname": socket.gethostname()
     }
 
 @app.get("/health")
