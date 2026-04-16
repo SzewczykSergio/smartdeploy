@@ -104,13 +104,13 @@ def dashboard():
     let timeLeft = 5;
     const timer = document.getElementById("timer");
 
-    setInterval(() => {
+    setInterval(() => {{
         timeLeft--;
-        if (timeLeft <= 0) {
+        if (timeLeft <= 0) {{
             timeLeft = 5;
-        }
+        }}
         timer.innerText = timeLeft;
-    }, 1000);
+    }}, 1000);
 </script>
 
     </body>
