@@ -118,7 +118,9 @@ def dashboard():
         <a class="button" href="/deploy">Deploy App</a>
 
 <script>
-    let timeLeft = 5;
+    const totalTime = 5;
+    let timeLeft = totalTime;
+
     const timer = document.getElementById("timer");
     const bar = document.getElementById("bar");
 
@@ -126,12 +128,12 @@ def dashboard():
         timeLeft--;
 
         if (timeLeft < 0) {{
-            timeLeft = 5;
+            timeLeft = totalTime;
         }}
 
-        timer.innerText = timeLeft;
+        timer.innerText = timeLeft === 0 ? "Refreshing..." : timeLeft;
 
-        let progress = (timeLeft / 5) * 100;
+        const progress = (timeLeft / totalTime) * 100;
         bar.style.width = progress + "%";
 
     }}, 1000);
