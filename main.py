@@ -151,12 +151,50 @@ def system_info():
         "disk_percent": psutil.disk_usage('/').percent
     }
 
-
-@app.get("/containers")
+@app.get("/containers", response_class=HTMLResponse)
 def containers():
-    return {
-        "running_containers": ["smartdeploy-app", "jenkins"]
-    }
+    containers = ["smartdeploy-app", "jenkins"]
+
+    items = "".join([
+        f"<li>🐳 {c}</li>" for c in containers
+    ])
+
+    return f"""
+    <html>
+    <head>
+        <title>Containers</title>
+        <style>
+            body {{
+                background: #0f172a;
+                color: white;
+                font-family: Arial;
+                padding: 20px;
+            }}
+            .box {{
+                background: #1e293b;
+                padding: 20px;
+                border-radius: 10px;
+            }}
+            ul {{
+                list-style: none;
+                padding: 0;
+            }}
+            li {{
+                padding: 10px;
+                border-bottom: 1px solid #334155;
+            }}
+        </style>
+    </head>
+    <body>
+        <h2>🐳 Containers</h2>
+        <div class="box">
+            <ul>
+                {items}
+            </ul>
+        </div>
+    </body>
+    </html>
+    """
 
 
 @app.get("/logs", response_class=HTMLResponse)
