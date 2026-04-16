@@ -159,11 +159,35 @@ def containers():
     }
 
 
-@app.get("/logs")
+@app.get("/logs", response_class=HTMLResponse)
 def logs():
-    return {
-        "logs": "Run on server: docker logs smartdeploy-app"
-    }
+    return """
+    <html>
+    <head>
+        <title>Logs</title>
+        <style>
+            body {
+                background: #0f172a;
+                color: white;
+                font-family: monospace;
+                padding: 20px;
+            }
+            .box {
+                background: #1e293b;
+                padding: 20px;
+                border-radius: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <h2>📜 Logs</h2>
+        <div class="box">
+            Run on server:<br><br>
+            <b>docker logs smartdeploy-app</b>
+        </div>
+    </body>
+    </html>
+    """
 
 
 @app.get("/deploy")
