@@ -25,7 +25,6 @@ def dashboard():
     return f"""
     <html>
     <head>
-        <meta http-equiv="refresh" content="5">
         <title>DevOps Dashboard</title>
         <style>
             body {{
@@ -94,22 +93,22 @@ def dashboard():
         <div class="container">
             <div class="card">
                 <h3>CPU Usage</h3>
-                <div class="value">{cpu}%</div>
+                <div class="value" id="cpu">0%</div>
             </div>
 
             <div class="card">
                 <h3>RAM Usage</h3>
-                <div class="value">{ram}%</div>
+                <div class="value" id="ram">0%</div>
             </div>
 
             <div class="card">
                 <h3>Disk Usage</h3>
-                <div class="value">{disk}%</div>
+                <div class="value" id="disk">0%</div>
             </div>
 
             <div class="card">
                 <h3>Containers</h3>
-                <div class="value">{len(containers)}</div>
+                <div class="value" id="containers">0</div>
             </div>
         </div>
 
@@ -118,25 +117,32 @@ def dashboard():
         <a class="button" href="/deploy">Deploy App</a>
 
 <script>
-    const totalTime = 5;
-    let timeLeft = totalTime;
+    async function updateData() {
+        try {
+            const res = await fetch("/system");
+            const data = await res.json();
 
-    const timer = document.getElementById("timer");
-    const bar = document.getElementById("bar");
+            document.getElementById("cpu").innerText = data.cpu_percent + "%";
+            document.getElementById("ram").innerText = data.ram_percent + "%";
+            document.getElementById("disk").innerText = data.disk_percent + "%";
+        } catch (err) {
+            console.log("Error fetching system data");
+        }
 
-    setInterval(() => {{
-        timeLeft--;
+        try {
+            const res2 = await fetch("/containers");
+            const data2 = await res2.json();
 
-        if (timeLeft < 0) {{
-            timeLeft = totalTime;
-        }}
+            document.getElementById("containers").innerText = data2.running_containers.length;
+        } catch (err) {
+            console.log("Error fetching containers");
+        }
+    }
 
-        timer.innerText = timeLeft === 0 ? "Refreshing..." : timeLeft;
+    setInterval(updateData, 2000);
 
-        const progress = (timeLeft / totalTime) * 100;
-        bar.style.width = progress + "%";
-
-    }}, 1000);
+    // run once on load
+    updateData();
 </script>
 
     </body>
