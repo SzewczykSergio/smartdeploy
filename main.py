@@ -151,15 +151,11 @@ def system_info():
         "disk_percent": psutil.disk_usage('/').percent
     }
 
-@app.get("/containers", response_class=HTMLResponse)
-def containers():
-    containers = ["smartdeploy-app", "jenkins"]
-
-    items = "".join([
-        f"<li>🐳 {c}</li>" for c in containers
-    ])
-
-    return f"""
+@app.get("/api/containers")
+def get_containers():
+    return {
+        "running_containers": ["smartdeploy-app", "jenkins"]
+    }
     <html>
     <head>
         <title>Containers</title>
