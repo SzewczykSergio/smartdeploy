@@ -124,11 +124,16 @@ def dashboard():
 
     setInterval(() => {{
         timeLeft--;
-        if (timeLeft <= 0) {{
+
+        if (timeLeft < 0) {{
             timeLeft = 5;
         }}
+
         timer.innerText = timeLeft;
-        bar.style.width = (timeLeft / 5) * 100 + "%";
+
+        let progress = (timeLeft / 5) * 100;
+        bar.style.width = progress + "%";
+
     }}, 1000);
 </script>
 
