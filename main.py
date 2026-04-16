@@ -228,10 +228,45 @@ def logs():
     """
 
 
-@app.get("/deploy")
+@app.get("/deploy", response_class=HTMLResponse)
 def deploy():
     try:
         subprocess.Popen(["bash", "deploy.sh"])
-        return {"status": "Deployment started"}
+        message = "✅ Deployment started..."
     except:
-        return {"error": "Deployment failed"}
+        message = "❌ Deployment failed"
+
+    return f"""
+    <html>
+    <head>
+        <title>Deploy</title>
+        <style>
+            body {{
+                background: #0f172a;
+                color: white;
+                font-family: Arial;
+                padding: 20px;
+                text-align: center;
+            }}
+            .box {{
+                background: #1e293b;
+                padding: 30px;
+                border-radius: 10px;
+                display: inline-block;
+            }}
+            a {{
+                display: block;
+                margin-top: 20px;
+                color: #3b82f6;
+                text-decoration: none;
+            }}
+        </style>
+    </head>
+    <body>
+        <div class="box">
+            <h2>{message}</h2>
+            <a href="/">⬅ Back to Dashboard</a>
+        </div>
+    </body>
+    </html>
+    """
