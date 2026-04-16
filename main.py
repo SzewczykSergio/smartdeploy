@@ -117,27 +117,27 @@ def dashboard():
         <a class="button" href="/deploy">Deploy App</a>
 
 <script>
-    async function updateData() {
-        try {
+    async function updateData() {{
+        try {{
             const res = await fetch("/system");
             const data = await res.json();
 
             document.getElementById("cpu").innerText = data.cpu_percent + "%";
             document.getElementById("ram").innerText = data.ram_percent + "%";
             document.getElementById("disk").innerText = data.disk_percent + "%";
-        } catch (err) {
+        }} catch (err) {{
             console.log("Error fetching system data");
-        }
+        }}
 
-        try {
+        try {{
             const res2 = await fetch("/containers");
             const data2 = await res2.json();
 
             document.getElementById("containers").innerText = data2.running_containers.length;
-        } catch (err) {
+        }} catch (err) {{
             console.log("Error fetching containers");
-        }
-    }
+        }}
+    }}
 
     setInterval(updateData, 2000);
 
