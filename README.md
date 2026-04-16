@@ -1,94 +1,79 @@
-\#SmartDeploy
+# SmartDeploy
 
+## Overview
 
+SmartDeploy is a DevOps project demonstrating a complete CI/CD pipeline for deploying a containerized backend application on a VPS.
 
-\##Overview
+---
 
-SmartDeploy is a DevOps project demonstrating how to deploy a containerized backend application on a secured VPS.
+## Features
 
+- Linux VPS setup and management
+- Docker containerization
+- CI/CD pipeline using Jenkins
+- Automated deployment using Ansible
+- Reverse proxy configuration with NGINX
+- Real-time system monitoring dashboard (CPU, RAM, Disk, Containers)
+- Public deployment with domain access
 
+---
 
-This project covers:
+## Architecture
 
-\- Linux server setup
+GitHub → Jenkins → Docker → Ansible → Running Container
 
-\- SSH hardening
+- Jenkins builds Docker image on each commit
+- Deployment is executed via Ansible playbook
+- Ansible ensures container is always running (idempotent)
+- Deployment runs inside ephemeral container (CI/CD pattern)
 
-\- Docker containerization
+---
 
-\- Public deployment
+## Tech Stack
 
+- Linux (Ubuntu VPS)
+- Docker
+- Jenkins (CI/CD)
+- Ansible
+- NGINX
+- FastAPI (Python)
+- JavaScript (live dashboard)
 
+---
 
-\---
+## Monitoring
 
+The application includes a custom dashboard displaying:
 
+- CPU usage
+- RAM usage
+- Disk usage
+- Running containers
 
-\##Tech Stack
+Data is updated in real-time via API.
 
-\- Linux (Ubuntu VPS)
+---
 
-\- Docker
+## Key Concepts Used
 
-\- FastAPI (Python)
+- CI/CD pipeline automation
+- Infrastructure as Code (Ansible)
+- Idempotent deployments
+- Container orchestration
+- Reverse proxy configuration
+- Debugging production issues (502 errors, container failures)
 
-\- Git \& GitHub
+---
 
+## Notes
 
+Deployment is executed using an ephemeral container that installs Ansible at runtime.  
+This approach keeps the CI/CD environment clean and reproducible.
 
-\---
+---
 
-
-
-\##Infrastructure
-
-\- SSH key-based authentication
-
-\- Disabled password login
-
-\- Disabled root login
-
-\- Non-root user with sudo privileges
-
-
-
-\---
-
-
-
-\##Application
-
-A simple FastAPI app with two endpoints:
-
-
-
-\- `/` → returns message + hostname  
-
-\- `/health` → health check endpoint  
-
-
-
-\---
-
-
-
-\##Live Demo
-
-http://51.178.39.34:8000
-
-
-
-\---
-
-
-
-\##Run locally
-
-
+## How to Run
 
 ```bash
-
 docker build -t smartdeploy .
-
 docker run -p 8000:8000 smartdeploy
-
