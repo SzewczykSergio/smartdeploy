@@ -72,6 +72,7 @@ def dashboard():
     <body>
         <h1>🚀 DevOps Dashboard</h1>
         <p>Host: {socket.gethostname()}</p>
+        <p>Refreshing in <span id="timer">5</span>s</p>
 
         <div class="container">
             <div class="card">
@@ -98,6 +99,19 @@ def dashboard():
         <a class="button" href="/containers">View Containers</a>
         <a class="button" href="/logs">View Logs</a>
         <a class="button" href="/deploy">Deploy App</a>
+
+<script>
+    let timeLeft = 5;
+    const timer = document.getElementById("timer");
+
+    setInterval(() => {
+        timeLeft--;
+        if (timeLeft <= 0) {
+            timeLeft = 5;
+        }
+        timer.innerText = timeLeft;
+    }, 1000);
+</script>
 
     </body>
     </html>
