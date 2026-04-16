@@ -121,11 +121,9 @@ def containers():
 
 @app.get("/logs")
 def logs():
-    try:
-        result = subprocess.check_output(["docker", "logs", "smartdeploy-app", "--tail", "20"])
-        return {"logs": result.decode()}
-    except:
-        return {"error": "Could not fetch logs"}
+    return {
+        "logs": "Run on server: docker logs smartdeploy-app"
+    }
 
 
 @app.get("/deploy")
