@@ -74,6 +74,23 @@ def dashboard():
         <p>Host: {socket.gethostname()}</p>
         <p>Refreshing in <span id="timer">5</span>s</p>
 
+<div style="width: 300px; margin: 10px auto;">
+    <div id="progress" style="
+        height: 10px;
+        width: 100%;
+        background: #1e293b;
+        border-radius: 5px;
+        overflow: hidden;
+    ">
+        <div id="bar" style="
+            height: 100%;
+            width: 100%;
+            background: #3b82f6;
+            transition: width 1s linear;
+        "></div>
+    </div>
+</div>
+
         <div class="container">
             <div class="card">
                 <h3>CPU Usage</h3>
@@ -103,6 +120,7 @@ def dashboard():
 <script>
     let timeLeft = 5;
     const timer = document.getElementById("timer");
+    const bar = document.getElementById("bar");
 
     setInterval(() => {{
         timeLeft--;
@@ -110,6 +128,7 @@ def dashboard():
             timeLeft = 5;
         }}
         timer.innerText = timeLeft;
+        bar.style.width = (timeLeft / 5) * 100 + "%";
     }}, 1000);
 </script>
 
