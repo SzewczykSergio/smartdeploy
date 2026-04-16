@@ -69,26 +69,11 @@ def dashboard():
         </style>
     </head>
     <body>
-        <h1>🚀 DevOps Dashboard</h1>
+        <h1>VPS Dashboard</h1>
         <p>Host: {socket.gethostname()}</p>
-        <p>Refreshing in <span id="timer">5</span>s</p>
-
-<div style="width: 300px; margin: 10px auto;">
-    <div id="progress" style="
-        height: 10px;
-        width: 100%;
-        background: #1e293b;
-        border-radius: 5px;
-        overflow: hidden;
-    ">
-        <div id="bar" style="
-            height: 100%;
-            width: 100%;
-            background: #3b82f6;
-            transition: width 1s linear;
-        "></div>
-    </div>
-</div>
+        <p style="color: #22c55e; font-weight: bold;">
+            ● Live system metrics
+        </p>
 
         <div class="container">
             <div class="card">
