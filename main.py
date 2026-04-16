@@ -71,10 +71,18 @@ def dashboard():
     <body>
         <h1>VPS Dashboard</h1>
         <p>Host: {socket.gethostname()}</p>
-        <p style="color: #22c55e; font-weight: bold;">
-            ● Live system metrics
+        <p style="color: white; font-weight: 500;">
+            <span style="color: #22c55e; animation: pulse 1.5s infinite; margin-right: 6px;">●</span>
+            Live system metrics
         </p>
 
+        <style>
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+        </style>
         <div class="container">
             <div class="card">
                 <h3>CPU Usage</h3>
