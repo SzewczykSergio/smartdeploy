@@ -25,6 +25,7 @@ def dashboard():
     return f"""
     <html>
     <head>
+        <meta http-equiv="refresh" content="5">
         <title>DevOps Dashboard</title>
         <style>
             body {{
