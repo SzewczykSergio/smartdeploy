@@ -274,15 +274,28 @@ def logs():
 @app.get("/api/logs/stream")
 def stream_logs():
     def generate():
-        process = subprocess.Popen(
-            ["docker", "logs", "-f", "--tail", "10", "smartdeploy-app"],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True
-        )
+        last_output = ""
 
-        for line in iter(process.stdout.readline, ''):
-            yield f"data: {line}\n\n"
+        while True:
+            try:
+                result = subprocess.check_output(
+                    ["docker", "logs", "--tail", "20", "smartdeploy-app"],
+                    stderr=subprocess.STDOUT
+                ).decode()
+
+                if result != last_output:
+                    lines = result.splitlines()
+                    new_lines = lines[-10:]  # send only last lines
+
+                    for line in new_lines:
+                        yield f"data: {line}\n\n"
+
+                    last_output = result
+
+            except Exception as e:
+                yield f"data: ERROR: {str(e)}\n\n"
+
+            time.sleep(2)
 
     return StreamingResponse(generate(), media_type="text/event-stream")
 
