@@ -103,7 +103,6 @@ def dashboard():
 
         <a class="button" href="/containers">View Containers</a>
         <a class="button" href="/logs">View Logs</a>
-        <a class="button" href="/deploy">Deploy App</a>
 
         <div class="section">
             <h3>• How It Works</h3>
