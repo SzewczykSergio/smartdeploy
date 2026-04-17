@@ -294,7 +294,7 @@ def stream_logs():
                 ).decode()
 
                 lines = result.splitlines()
-                new_lines = lines[last_size:]
+                new_lines = lines[-20:]
 
                 for line in new_lines:
                     if "GET /system" in line or "GET /api/containers" in line:
