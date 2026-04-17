@@ -287,7 +287,7 @@ def stream_logs():
         while True:
             try:
                 process = subprocess.Popen(
-                    ["docker", "logs", "--tail", "50", "-f", "smartdeploy-app"],
+                    ["docker", "logs", "--tail", "50", "-f", "smartdeploy-app-new"],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                     text=True
