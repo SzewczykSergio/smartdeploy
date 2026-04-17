@@ -284,31 +284,22 @@ def logs():
 @app.get("/api/logs/stream")
 def stream_logs():
     def generate():
-        last_lines = set()
-
         while True:
             try:
-                result = subprocess.check_output(
-                    ["docker", "logs", "--tail", "50", "smartdeploy-app"],
-                    stderr=subprocess.STDOUT
-                ).decode()
+                process = subprocess.Popen(
+                    ["docker", "logs", "--tail", "50", "-f", "smartdeploy-app"],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True
+                )
 
-                lines = result.splitlines()
-
-                for line in lines:
-                    if line in last_lines:
-                        continue
-
+                for line in iter(process.stdout.readline, ''):
                     if "GET /system" in line or "GET /api/containers" in line:
                         continue
-
-                    last_lines.add(line)
                     yield f"data: {line}\n\n"
 
-                time.sleep(2)
-
-            except Exception as e:
-                yield f"data: ERROR: {str(e)}\n\n"
+            except Exception:
+                yield "data: Waiting for container...\n\n"
                 time.sleep(2)
 
     return StreamingResponse(generate(), media_type="text/event-stream")
