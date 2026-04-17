@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
+from fastapi.responses import StreamingResponse
 import psutil
 import subprocess
 import socket
@@ -223,59 +224,67 @@ def containers():
 
 @app.get("/logs", response_class=HTMLResponse)
 def logs():
-    import subprocess
-
-    try:
-        result = subprocess.check_output(
-            ["docker", "logs", "--tail", "50", "smartdeploy-app"],
-            stderr=subprocess.STDOUT
-        ).decode()
-    except Exception as e:
-        result = f"Error getting logs: {str(e)}"
-
-    return f"""
+    return """
     <html>
     <head>
-        <title>Logs</title>
+        <title>Live Logs</title>
         <style>
-            body {{
+            body {
                 background: #0f172a;
                 color: white;
                 font-family: monospace;
                 padding: 20px;
-            }}
-            .box {{
+            }
+            .box {
                 background: #1e293b;
                 padding: 20px;
                 border-radius: 10px;
+                height: 500px;
+                overflow-y: scroll;
                 white-space: pre-wrap;
-                text-align: left;
-            }}
-            a {{
-                color: #3b82f6;
-                text-decoration: none;
-            }}
+            }
         </style>
-
-        <script>
-            setInterval(() => {{
-                location.reload();
-            }}, 3000);
-        </script>
     </head>
     <body>
-        <h2>Logs (last 50 lines)</h2>
+        <h2>Live Logs (real-time)</h2>
 
-        <div class="box">
-{result}
-        </div>
+        <div id="logs" class="box"></div>
 
         <br>
         <a href="/">← Back</a>
+
+        <script>
+            const logBox = document.getElementById("logs");
+
+            const evtSource = new EventSource("/api/logs/stream");
+
+            evtSource.onmessage = function(event) {
+                logBox.innerText += event.data + "\\n";
+                logBox.scrollTop = logBox.scrollHeight;
+            };
+
+            evtSource.onerror = function() {
+                logBox.innerText += "\\n[connection lost]\\n";
+            };
+        </script>
     </body>
     </html>
     """
 
+@app.get("/api/logs/stream")
+def stream_logs():
+    def generate():
+        process = subprocess.Popen(
+            ["docker", "logs", "-f", "--tail", "10", "smartdeploy-app"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True
+        )
+
+        for line in iter(process.stdout.readline, ''):
+            yield f"data: {line}\n\n"
+
+    return StreamingResponse(generate(), media_type="text/event-stream")
 
 @app.get("/deploy", response_class=HTMLResponse)
 def deploy():
