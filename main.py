@@ -315,7 +315,7 @@ def stream_logs():
 
 @app.get("/deploy", response_class=HTMLResponse)
 def deploy():
-    subprocess.Popen(["bash", "deploy.sh"])
+    subprocess.Popen(["bash", "/app_host/app/deploy.sh"])
 
     return """
     <html>
