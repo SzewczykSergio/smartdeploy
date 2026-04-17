@@ -7,7 +7,6 @@ import socket
 app = FastAPI()
 
 
-# ✅ NEW API (FOR DASHBOARD)
 @app.get("/api/containers")
 def get_containers():
     return {
@@ -54,13 +53,26 @@ def dashboard():
                 text-decoration: none;
                 border-radius: 5px;
             }}
+            .section {{
+                margin-top: 50px;
+                padding: 25px;
+                max-width: 900px;
+                margin-left: auto;
+                margin-right: auto;
+                text-align: left;
+                background: #1e293b;
+                border-radius: 10px;
+            }}
+            .section h3, .section h4 {{
+                margin-top: 10px;
+            }}
         </style>
     </head>
     <body>
         <h1>VPS Dashboard</h1>
         <p>Host: {socket.gethostname()}</p>
 
-        <p style="color: white;">
+        <p>
             <span style="color: #22c55e;">●</span>
             Live system metrics
         </p>
@@ -90,6 +102,38 @@ def dashboard():
         <a class="button" href="/containers">View Containers</a>
         <a class="button" href="/logs">View Logs</a>
         <a class="button" href="/deploy">Deploy App</a>
+
+        <div class="section">
+            <h3>• How It Works</h3>
+            <p>
+                This dashboard is part of a DevOps project demonstrating automated deployment
+                and infrastructure management on a VPS.
+            </p>
+
+            <ul style="line-height: 1.8;">
+                <li>Application built with FastAPI and containerized using Docker</li>
+                <li>CI/CD pipeline implemented with Jenkins</li>
+                <li>Automatic deployment handled by Ansible playbook</li>
+                <li>Application runs inside Docker container on VPS</li>
+                <li>System metrics (CPU, RAM, Disk) collected in real-time</li>
+            </ul>
+
+            <h4>• Deployment Flow</h4>
+            <p>
+                GitHub → Jenkins → Docker Build → Ansible → Running Container
+            </p>
+
+            <h4>• What You See</h4>
+            <ul style="line-height: 1.8;">
+                <li>Live CPU, RAM and Disk usage</li>
+                <li>Number of running containers</li>
+                <li>Quick access to logs and deployment actions</li>
+            </ul>
+
+            <p style="margin-top:20px; font-size:12px; color:#94a3b8;">
+                Project: SmartDeploy | DevOps CI/CD demonstration
+            </p>
+        </div>
 
 <script>
     async function updateData() {{
@@ -133,12 +177,11 @@ def system_info():
     }
 
 
-# ✅ HTML PAGE
 @app.get("/containers", response_class=HTMLResponse)
 def containers():
     containers = ["smartdeploy-app", "jenkins"]
 
-    items = "".join([f"<li>🐳 {c}</li>" for c in containers])
+    items = "".join([f"<li>{c}</li>" for c in containers])
 
     return f"""
     <html>
@@ -167,7 +210,7 @@ def containers():
         </style>
     </head>
     <body>
-        <h2>🐳 Containers</h2>
+        <h2>Containers</h2>
         <div class="box">
             <ul>
                 {items}
@@ -183,7 +226,7 @@ def logs():
     return """
     <html>
     <body style="background:#0f172a;color:white;font-family:monospace;padding:20px;">
-        <h2>📜 Logs</h2>
+        <h2>Logs</h2>
         <div style="background:#1e293b;padding:20px;border-radius:10px;">
             Run on server:<br><br>
             <b>docker logs smartdeploy-app</b>
@@ -200,7 +243,7 @@ def deploy():
     return """
     <html>
     <body style="background:#0f172a;color:white;text-align:center;padding:40px;">
-        <h2>🚀 Deployment started...</h2>
+        <h2>Deployment started...</h2>
         <a href="/">Back</a>
     </body>
     </html>
