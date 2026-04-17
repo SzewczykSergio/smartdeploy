@@ -223,14 +223,23 @@ def containers():
 
 @app.get("/logs", response_class=HTMLResponse)
 def logs():
-    return """
+    try:
+        result = subprocess.check_output(
+            ["docker", "logs", "--tail", "50", "smartdeploy-app"],
+            stderr=subprocess.STDOUT
+        ).decode("utf-8")
+    except subprocess.CalledProcessError as e:
+        result = e.output.decode("utf-8")
+
+    return f"""
     <html>
     <body style="background:#0f172a;color:white;font-family:monospace;padding:20px;">
-        <h2>Logs</h2>
-        <div style="background:#1e293b;padding:20px;border-radius:10px;">
-            Run on server:<br><br>
-            <b>docker logs smartdeploy-app</b>
+        <h2>Logs (last 50 lines)</h2>
+        <div style="background:#1e293b;padding:20px;border-radius:10px;white-space:pre-wrap;">
+            {result}
         </div>
+        <br>
+        <a href="/" style="color:#3b82f6;">← Back</a>
     </body>
     </html>
     """
