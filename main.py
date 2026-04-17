@@ -304,15 +304,103 @@ def stream_logs():
 
     return StreamingResponse(generate(), media_type="text/event-stream")
 
+deploy_running = False
+
 @app.get("/deploy", response_class=HTMLResponse)
 def deploy():
-    subprocess.Popen(["bash", "/app_host/app/deploy.sh"])
+    import subprocess
+    import threading
+
+    global deploy_running
+
+    if deploy_running:
+        return """
+        <html>
+        <head>
+            <style>
+                body {
+                    background: #0f172a;
+                    color: white;
+                    text-align: center;
+                    padding: 40px;
+                    font-family: Arial;
+                }
+                .box {
+                    background: #1e293b;
+                    padding: 30px;
+                    border-radius: 10px;
+                    display: inline-block;
+                }
+                .button {
+                    display: inline-block;
+                    margin: 10px;
+                    padding: 10px 20px;
+                    background: #3b82f6;
+                    color: white;
+                    text-decoration: none;
+                    border-radius: 5px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="box">
+                <h2>Deployment already running...</h2>
+                <a class="button" href="/">← Back to Dashboard</a>
+            </div>
+        </body>
+        </html>
+        """
+
+    deploy_running = True
+
+    def run():
+        global deploy_running
+        subprocess.call(["bash", "/app_host/app/deploy.sh"])
+        deploy_running = False
+
+    threading.Thread(target=run).start()
 
     return """
     <html>
-    <body style="background:#0f172a;color:white;text-align:center;padding:40px;">
-        <h2>Deployment started...</h2>
-        <a href="/">Back</a>
+    <head>
+        <style>
+            body {
+                background: #0f172a;
+                color: white;
+                text-align: center;
+                padding: 40px;
+                font-family: Arial;
+            }
+            .box {
+                background: #1e293b;
+                padding: 30px;
+                border-radius: 10px;
+                display: inline-block;
+            }
+            .button {
+                display: inline-block;
+                margin: 10px;
+                padding: 10px 20px;
+                background: #3b82f6;
+                color: white;
+                text-decoration: none;
+                border-radius: 5px;
+            }
+            .button.secondary {
+                background: #22c55e;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div class="box">
+            <h2>Deployment started...</h2>
+            <p>You can monitor progress in real-time logs</p>
+
+            <a class="button secondary" href="/logs">View Logs</a>
+            <a class="button" href="/">← Back to Dashboard</a>
+        </div>
+
     </body>
     </html>
     """
