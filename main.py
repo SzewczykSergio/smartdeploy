@@ -259,12 +259,21 @@ def logs():
             const evtSource = new EventSource("/api/logs/stream");
 
             evtSource.onmessage = function(event) {
-                logBox.innerText += event.data + "\\n";
+                if (event.data.includes("ERROR")) {
+                    logBox.innerHTML += "<span style='color:red'>" + event.data + "</span><br>";
+                } else if (event.data.includes("WARNING")) {
+                    logBox.innerHTML += "<span style='color:orange'>" + event.data + "</span><br>";
+                } else if (event.data.includes("INFO")) {
+                    logBox.innerHTML += "<span style='color:lightgreen'>" + event.data + "</span><br>";
+                } else {
+                    logBox.innerHTML += event.data + "<br>";
+                }
+
                 logBox.scrollTop = logBox.scrollHeight;
             };
 
             evtSource.onerror = function() {
-                logBox.innerText += "\\n[connection lost]\\n";
+                logBox.innerHTML += "<span style='color:red'>[connection lost]</span><br>";
             };
         </script>
     </body>
@@ -284,10 +293,11 @@ def stream_logs():
                 ).decode()
 
                 lines = result.splitlines()
-
                 new_lines = lines[last_size:]
 
                 for line in new_lines:
+                    if "GET /system" in line or "GET /api/containers" in line:
+                        continue
                     yield f"data: {line}\n\n"
 
                 last_size = len(lines)
