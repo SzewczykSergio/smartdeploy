@@ -4,7 +4,7 @@ from fastapi.responses import StreamingResponse
 import psutil
 import subprocess
 import socket
-import asyncio
+import time
 
 app = FastAPI()
 
@@ -306,7 +306,7 @@ def stream_logs():
             except Exception as e:
                 yield f"data: ERROR: {str(e)}\n\n"
 
-            await asyncio.sleep(2)
+            time.sleep(2)
 
     return StreamingResponse(generate(), media_type="text/event-stream")
 
