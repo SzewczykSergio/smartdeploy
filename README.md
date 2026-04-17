@@ -77,5 +77,4 @@ This approach keeps the CI/CD environment clean and reproducible.
 ## How to Run
 
 ```bash
-docker build -t smartdeploy .
-docker run -p 8000:8000 smartdeploy
+./deploy.sh
