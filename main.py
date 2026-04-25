@@ -5,6 +5,11 @@ import psutil
 import subprocess
 import socket
 import time
+import os
+from fastapi import Request
+from openai import OpenAI
+
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 app = FastAPI()
 
@@ -302,3 +307,31 @@ def stream_logs():
                 time.sleep(2)
 
     return StreamingResponse(generate(), media_type="text/event-stream")
+    
+@app.post("/api/generate-description")
+async def generate_description(request: Request):
+    data = await request.json()
+
+    name = data.get("name")
+    features = data.get("features")
+    tone = data.get("tone", "professional")
+
+    prompt = f"""
+    Write a {tone} product description.
+
+    Product: {name}
+    Features: {features}
+
+    Make it engaging and clear.
+    """
+
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "user", "content": prompt}
+        ]
+    )
+
+    return {
+        "description": response.choices[0].message.content
+    }
