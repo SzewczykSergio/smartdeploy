@@ -341,66 +341,128 @@ from fastapi.responses import HTMLResponse
 
 @app.get("/generator", response_class=HTMLResponse)
 def generator_ui():
-    return """
-    <html>
-    <head>
-        <title>AI Product Description Generator</title>
-    </head>
-    <body style="background:#0f172a;color:white;font-family:sans-serif;padding:40px;max-width:600px;margin:auto;">
+        return """
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>AI Product Generator</title>
+            <style>
+                body {
+                    background: #0f172a;
+                    font-family: Arial, sans-serif;
+                    color: white;
+                    display: flex;
+                    justify-content: center;
+                    padding: 40px;
+                }
 
-        <h1>AI Product Description Generator</h1>
+                .container {
+                    width: 600px;
+                    background: #1e293b;
+                    padding: 30px;
+                    border-radius: 12px;
+                    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+                }
 
-        <input id="name" placeholder="Product name" style="width:100%;padding:10px;margin:10px 0;"><br>
+                h1 {
+                    text-align: center;
+                    margin-bottom: 20px;
+                }
 
-        <textarea id="features" placeholder="Features (comma separated)" style="width:100%;padding:10px;margin:10px 0;"></textarea><br>
+                input, textarea, select {
+                    width: 100%;
+                    padding: 12px;
+                    margin-top: 10px;
+                    border-radius: 8px;
+                    border: none;
+                    font-size: 14px;
+                }
 
-        <select id="tone" style="width:100%;padding:10px;margin:10px 0;">
-            <option value="professional">Professional</option>
-            <option value="casual">Casual</option>
-            <option value="luxury">Luxury</option>
-        </select><br>
+                button {
+                    width: 100%;
+                    padding: 12px;
+                    margin-top: 15px;
+                    background: #22c55e;
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    font-size: 16px;
+                    cursor: pointer;
+                }
 
-        <button onclick="generate()" style="padding:10px 20px;background:#22c55e;border:none;color:white;font-size:16px;cursor:pointer;">
-            Generate
-        </button>
+                button:hover {
+                    background: #16a34a;
+                }
 
-        <pre id="result" style="margin-top:20px;background:#1e293b;padding:20px;"></pre>
+                #loader {
+                    display: none;
+                    text-align: center;
+                    margin-top: 15px;
+                }
+
+                #result {
+                    margin-top: 20px;
+                    background: #0f172a;
+                    padding: 15px;
+                    border-radius: 8px;
+                    white-space: pre-wrap;
+                }
+
+                .copy-btn {
+                    margin-top: 10px;
+                    background: #3b82f6;
+                }
+            </style>
+        </head>
+        <body>
+
+        <div class="container">
+            <h1>AI Product Description Generator</h1>
+
+            <input id="name" placeholder="Product name" />
+            <textarea id="features" placeholder="Features"></textarea>
+
+            <select id="tone">
+                <option value="professional">Professional</option>
+                <option value="casual">Casual</option>
+                <option value="funny">Funny</option>
+            </select>
+
+            <button onclick="generate()">Generate</button>
+
+            <div id="loader">AI is thinking...</div>
+
+            <div id="result"></div>
+            <button class="copy-btn" onclick="copyText()">Copy</button>
+        </div>
 
         <script>
         async function generate() {
-            const button = document.querySelector("button");
-            const result = document.getElementById("result");
-
             const name = document.getElementById("name").value;
             const features = document.getElementById("features").value;
             const tone = document.getElementById("tone").value;
 
-            //SHOW LOADING
-            button.disabled = true;
-            button.innerText = "Generating...";
-            result.innerText = "AI is thinking...";
+            document.getElementById("loader").style.display = "block";
+            document.getElementById("result").innerText = "";
 
-            try {
-                const res = await fetch("/api/generate-description", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name, features, tone })
-                });
+            const res = await fetch("/api/generate-description", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, features, tone })
+            });
 
-                const data = await res.json();
+            const data = await res.json();
 
-                result.innerText = data.description;
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("result").innerText = data.description;
+        }
 
-            } catch (err) {
-                result.innerText = "Error generating description";
-            }
-
-            //RESET BUTTON
-            button.disabled = false;
-            button.innerText = "Generate";
-}
+        function copyText() {
+            const text = document.getElementById("result").innerText;
+            navigator.clipboard.writeText(text);
+        }
         </script>
 
-    </body>
-    </html>
-    """
+        </body>
+        </html>
+        """
