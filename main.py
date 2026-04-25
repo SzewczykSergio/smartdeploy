@@ -286,28 +286,48 @@ def logs():
     </html>
     """
 
+from fastapi.responses import StreamingResponse
+import subprocess
+
 @app.get("/api/logs/stream")
 def stream_logs():
     def generate():
-        while True:
-            try:
-                process = subprocess.Popen(
-                    ["docker", "logs", "--tail", "50", "-f", "smartdeploy-app-new"],
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    text=True
-                )
+        try:
+            process = subprocess.Popen(
+                ["docker", "logs", "-f", "--tail", "50", "smartdeploy-app"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                bufsize=1
+            )
 
-                for line in iter(process.stdout.readline, ''):
-                    if "GET /system" in line or "GET /api/containers" in line:
-                        continue
-                    yield f"data: {line}\n\n"
+            for line in iter(process.stdout.readline, ""):
+                if "GET /system" in line or "GET /api/containers" in line:
+                    continue
 
-            except Exception:
-                yield "data: Waiting for container...\n\n"
-                time.sleep(2)
+                yield f"data: {line.strip()}\n\n"
+
+        except Exception as e:
+            yield f"data: ERROR: {str(e)}\n\n"
 
     return StreamingResponse(generate(), media_type="text/event-stream")
+    
+function connectLogs() {
+    const evtSource = new EventSource("/api/logs/stream");
+
+    evtSource.onmessage = function(event) {
+        logBox.innerHTML += event.data + "<br>";
+        logBox.scrollTop = logBox.scrollHeight;
+    };
+
+    evtSource.onerror = function() {
+        logBox.innerHTML += "<span style='color:red'>[reconnecting...]</span><br>";
+        evtSource.close();
+        setTimeout(connectLogs, 2000);
+    };
+}
+
+connectLogs();
     
 @app.post("/api/generate-description")
 async def generate_description(request: Request):
@@ -426,7 +446,7 @@ def generator_ui():
             <h1>AI Product Description Generator</h1>
 
             <input id="name" placeholder="Product name" />
-            <textarea id="features" placeholder="Features (comma separated"></textarea>
+            <textarea id="features" placeholder="Features (comma separated)"></textarea>
 
             <select id="tone">
                 <option value="professional">Professional</option>
