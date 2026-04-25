@@ -372,16 +372,22 @@ def generator_ui():
                 input, textarea, select {
                     width: 100%;
                     padding: 12px;
-                    margin-top: 10px;
+                    margin-top: 12px;
                     border-radius: 8px;
                     border: none;
                     font-size: 14px;
+                    box-sizing: border-box;
+                }
+                
+                textarea {
+                    resize: none;
+                    height: 140px;
                 }
 
                 button {
                     width: 100%;
-                    padding: 12px;
-                    margin-top: 15px;
+                    padding: 14px;
+                    margin-top: 16px;
                     background: #22c55e;
                     color: white;
                     border: none;
