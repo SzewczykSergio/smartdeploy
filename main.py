@@ -311,21 +311,7 @@ def stream_logs():
             yield f"data: ERROR: {str(e)}\n\n"
 
     return StreamingResponse(generate(), media_type="text/event-stream")
-    
-function connectLogs() {
-    const evtSource = new EventSource("/api/logs/stream");
 
-    evtSource.onmessage = function(event) {
-        logBox.innerHTML += event.data + "<br>";
-        logBox.scrollTop = logBox.scrollHeight;
-    };
-
-    evtSource.onerror = function() {
-        logBox.innerHTML += "<span style='color:red'>[reconnecting...]</span><br>";
-        evtSource.close();
-        setTimeout(connectLogs, 2000);
-    };
-}
 
 connectLogs();
     
