@@ -4,7 +4,7 @@ set -e
 
 echo "Starting deployment..."
 
-cd /app_host/app || { echo "Failed to enter directory"; exit 1; }
+cd ~/smartdeploy/app || { echo "Failed to enter directory"; exit 1; }
 
 echo "Pulling latest code..."
 git config --global --add safe.directory /app_host/app
