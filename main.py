@@ -368,19 +368,37 @@ def generator_ui():
 
         <script>
         async function generate() {
+            const button = document.querySelector("button");
+            const result = document.getElementById("result");
+
             const name = document.getElementById("name").value;
             const features = document.getElementById("features").value;
             const tone = document.getElementById("tone").value;
 
-            const res = await fetch("/api/generate-description", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, features, tone })
-            });
+            //SHOW LOADING
+            button.disabled = true;
+            button.innerText = "Generating...";
+            result.innerText = "AI is thinking...";
 
-            const data = await res.json();
-            document.getElementById("result").innerText = data.description;
-        }
+            try {
+                const res = await fetch("/api/generate-description", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name, features, tone })
+                });
+
+                const data = await res.json();
+
+                result.innerText = data.description;
+
+            } catch (err) {
+                result.innerText = "Error generating description";
+            }
+
+            //RESET BUTTON
+            button.disabled = false;
+            button.innerText = "Generate";
+}
         </script>
 
     </body>
