@@ -26,77 +26,142 @@ def dashboard():
     return f"""
     <html>
     <head>
-        <title>DevOps Dashboard</title>
+        <title>SmartDeploy Dashboard</title>
         <style>
             body {{
                 font-family: Arial;
                 background-color: #0f172a;
                 color: white;
+                margin: 0;
+                display: flex;
+                justify-content: center;
+                padding: 30px;
+            }}
+
+            .wrapper {{
+                width: 100%;
+                max-width: 1000px;
+            }}
+
+            /* NAVBAR */
+            .navbar {{
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 20px;
+                font-size: 14px;
+            }}
+
+            .navbar a {{
+                color: #94a3b8;
+                text-decoration: none;
+                margin-right: 15px;
+                transition: 0.2s;
+            }}
+
+            .navbar a:hover {{
+                color: white;
+            }}
+
+            h1 {{
                 text-align: center;
             }}
+
+            .status {{
+                text-align: center;
+                margin-bottom: 20px;
+                color: #22c55e;
+            }}
+
             .container {{
                 display: flex;
                 justify-content: center;
                 flex-wrap: wrap;
             }}
+
             .card {{
                 background: #1e293b;
                 padding: 20px;
-                margin: 15px;
-                width: 250px;
+                margin: 10px;
+                width: 220px;
                 border-radius: 10px;
+                text-align: center;
             }}
+
             .value {{
-                font-size: 28px;
+                font-size: 26px;
                 margin-top: 10px;
             }}
+
+            .buttons {{
+                margin-top: 20px;
+                text-align: center;
+            }}
+
             .button {{
-                display: block;
-                margin: 10px auto;
-                padding: 10px;
-                width: 200px;
+                display: inline-block;
+                margin: 10px;
+                padding: 12px 20px;
                 background: #3b82f6;
                 color: white;
                 text-decoration: none;
-                border-radius: 5px;
+                border-radius: 6px;
             }}
+
+            .button:hover {{
+                background: #2563eb;
+            }}
+
             .section {{
-                margin-top: 50px;
+                margin-top: 40px;
                 padding: 25px;
-                max-width: 900px;
-                margin-left: auto;
-                margin-right: auto;
-                text-align: left;
                 background: #1e293b;
-                border-radius: 10px;
+                border-radius: 12px;
+                line-height: 1.6;
             }}
-            .section h3, .section h4 {{
+
+            h2, h3 {{
                 margin-top: 10px;
+            }}
+
+            ul {{
+                padding-left: 20px;
             }}
         </style>
     </head>
-    <body>
-        <h1>VPS Dashboard</h1>
-        <p>Host: {socket.gethostname()}</p>
 
-        <p>
-            <span style="color: #22c55e;">●</span>
-            Live system metrics
-        </p>
+    <body>
+    <div class="wrapper">
+
+        <!-- NAVBAR -->
+        <div class="navbar">
+            <div>
+                <a href="/">Home</a>
+                <a href="/generator">Generator</a>
+                <a href="/logs">Logs</a>
+                <a href="/containers">Containers</a>
+            </div>
+        </div>
+
+        <h1>SmartDeploy Dashboard</h1>
+        <p style="text-align:center;">Host: {socket.gethostname()}</p>
+
+        <div class="status">
+            ● Live system metrics & container monitoring
+        </div>
 
         <div class="container">
             <div class="card">
-                <h3>CPU Usage</h3>
+                <h3>CPU</h3>
                 <div class="value" id="cpu">0%</div>
             </div>
 
             <div class="card">
-                <h3>RAM Usage</h3>
+                <h3>RAM</h3>
                 <div class="value" id="ram">0%</div>
             </div>
 
             <div class="card">
-                <h3>Disk Usage</h3>
+                <h3>Disk</h3>
                 <div class="value" id="disk">0%</div>
             </div>
 
@@ -106,69 +171,85 @@ def dashboard():
             </div>
         </div>
 
-        <a class="button" href="/generator">AI Description Generator</a>
-        <a class="button" href="/containers">View Containers</a>
-        <a class="button" href="/logs">View Logs</a>
-
-        <div class="section">
-            <h3>• How It Works</h3>
-            <p>
-                This dashboard is part of a DevOps project demonstrating automated deployment
-                and infrastructure management on a VPS.
-            </p>
-
-            <ul style="line-height: 1.8;">
-                <li>Application built with FastAPI and containerized using Docker</li>
-                <li>CI/CD pipeline implemented with Jenkins</li>
-                <li>Automatic deployment handled by Ansible playbook</li>
-                <li>Application runs inside Docker container on VPS</li>
-                <li>System metrics (CPU, RAM, Disk) collected in real-time</li>
-            </ul>
-
-            <h4>• Deployment Flow</h4>
-            <p>
-                GitHub → Jenkins → Docker Build → Ansible → Running Container
-            </p>
-
-            <h4>• What You See</h4>
-            <ul style="line-height: 1.8;">
-                <li>Live CPU, RAM and Disk usage</li>
-                <li>Number of running containers</li>
-                <li>Quick access to logs and deployment actions</li>
-            </ul>
-
-            <p style="margin-top:20px; font-size:12px; color:#94a3b8;">
-                Project: SmartDeploy | DevOps CI/CD demonstration
-            </p>
+        <div class="buttons">
+            <a class="button" href="/generator">AI Generator</a>
+            <a class="button" href="/containers">View Containers</a>
+            <a class="button" href="/logs">View Logs</a>
         </div>
 
-<script>
-    async function updateData() {{
-        try {{
-            const res = await fetch("/system");
-            const data = await res.json();
+        <!-- IMPROVED SECTION -->
+        <div class="section">
 
-            document.getElementById("cpu").innerText = data.cpu_percent + "%";
-            document.getElementById("ram").innerText = data.ram_percent + "%";
-            document.getElementById("disk").innerText = data.disk_percent + "%";
-        }} catch (err) {{
-            console.log("system error");
+            <h2>SmartDeploy – DevOps Automation Demo</h2>
+
+            <p>
+                This project showcases a complete DevOps pipeline running on a VPS,
+                demonstrating real-world deployment automation and infrastructure management.
+            </p>
+
+            <h3>Architecture</h3>
+            <ul>
+                <li><b>FastAPI</b> backend application</li>
+                <li><b>Docker</b> containerized environment</li>
+                <li><b>Jenkins</b> CI/CD pipeline triggered by GitHub</li>
+                <li><b>Ansible</b> automated deployment</li>
+                <li>Runs on a <b>Linux VPS</b></li>
+            </ul>
+
+            <h3>Deployment Flow</h3>
+            <p>GitHub → Jenkins → Docker Build → Ansible → Live Container</p>
+
+            <h3>Features</h3>
+            <ul>
+                <li>Real-time CPU, RAM, Disk monitoring</li>
+                <li>Live container tracking</li>
+                <li>Streaming logs</li>
+                <li>AI-powered product description generator</li>
+            </ul>
+
+            <h3>What This Demonstrates</h3>
+            <ul>
+                <li>End-to-end CI/CD pipeline</li>
+                <li>Infrastructure as Code (IaC)</li>
+                <li>Container lifecycle management</li>
+                <li>AI integration in DevOps workflow</li>
+            </ul>
+
+            <p style="margin-top:15px; color:#94a3b8;">
+                SmartDeploy | DevOps Portfolio Project
+            </p>
+
+        </div>
+
+    </div>
+
+    <script>
+        async function updateData() {{
+            try {{
+                const res = await fetch("/system");
+                const data = await res.json();
+
+                document.getElementById("cpu").innerText = data.cpu_percent + "%";
+                document.getElementById("ram").innerText = data.ram_percent + "%";
+                document.getElementById("disk").innerText = data.disk_percent + "%";
+            }} catch (err) {{
+                console.log("system error");
+            }}
+
+            try {{
+                const res2 = await fetch("/api/containers");
+                const data2 = await res2.json();
+
+                document.getElementById("containers").innerText =
+                    data2.running_containers.length;
+            }} catch (err) {{
+                console.log("containers error");
+            }}
         }}
 
-        try {{
-            const res2 = await fetch("/api/containers");
-            const data2 = await res2.json();
-
-            document.getElementById("containers").innerText =
-                data2.running_containers.length;
-        }} catch (err) {{
-            console.log("containers error");
-        }}
-    }}
-
-    setInterval(updateData, 2000);
-    updateData();
-</script>
+        setInterval(updateData, 2000);
+        updateData();
+    </script>
 
     </body>
     </html>
