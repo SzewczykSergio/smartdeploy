@@ -108,6 +108,7 @@ def dashboard():
 
         <a class="button" href="/containers">View Containers</a>
         <a class="button" href="/logs">View Logs</a>
+        <a class="button" href="/generator">AI Description Generator</a>
 
         <div class="section">
             <h3>• How It Works</h3>
@@ -335,3 +336,53 @@ async def generate_description(request: Request):
     return {
         "description": response.choices[0].message.content
     }
+    
+from fastapi.responses import HTMLResponse
+
+@app.get("/generator", response_class=HTMLResponse)
+def generator_ui():
+    return """
+    <html>
+    <head>
+        <title>AI Product Description Generator</title>
+    </head>
+    <body style="background:#0f172a;color:white;font-family:sans-serif;padding:40px;max-width:600px;margin:auto;">
+
+        <h1>AI Product Description Generator</h1>
+
+        <input id="name" placeholder="Product name" style="width:100%;padding:10px;margin:10px 0;"><br>
+
+        <textarea id="features" placeholder="Features (comma separated)" style="width:100%;padding:10px;margin:10px 0;"></textarea><br>
+
+        <select id="tone" style="width:100%;padding:10px;margin:10px 0;">
+            <option value="professional">Professional</option>
+            <option value="casual">Casual</option>
+            <option value="luxury">Luxury</option>
+        </select><br>
+
+        <button onclick="generate()" style="padding:10px 20px;background:#22c55e;border:none;color:white;font-size:16px;cursor:pointer;">
+            Generate
+        </button>
+
+        <pre id="result" style="margin-top:20px;background:#1e293b;padding:20px;"></pre>
+
+        <script>
+        async function generate() {
+            const name = document.getElementById("name").value;
+            const features = document.getElementById("features").value;
+            const tone = document.getElementById("tone").value;
+
+            const res = await fetch("/api/generate-description", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, features, tone })
+            });
+
+            const data = await res.json();
+            document.getElementById("result").innerText = data.description;
+        }
+        </script>
+
+    </body>
+    </html>
+    """
