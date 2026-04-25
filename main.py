@@ -268,7 +268,6 @@ def system_info():
 @app.get("/containers", response_class=HTMLResponse)
 def containers():
     containers = ["smartdeploy-app", "jenkins"]
-
     items = "".join([f"<li>{c}</li>" for c in containers])
 
     return f"""
@@ -280,30 +279,72 @@ def containers():
                 background: #0f172a;
                 color: white;
                 font-family: Arial;
-                padding: 20px;
+                margin: 0;
+                display: flex;
+                justify-content: center;
+                padding: 30px;
             }}
+
+            .wrapper {{
+                width: 100%;
+                max-width: 900px;
+            }}
+
+            .navbar {{
+                margin-bottom: 20px;
+            }}
+
+            .navbar a {{
+                color: #94a3b8;
+                text-decoration: none;
+                margin-right: 15px;
+            }}
+
+            .navbar a:hover {{
+                color: white;
+            }}
+
             .box {{
                 background: #1e293b;
                 padding: 20px;
                 border-radius: 10px;
             }}
+
             ul {{
                 list-style: none;
                 padding: 0;
             }}
+
             li {{
-                padding: 10px;
+                padding: 12px;
                 border-bottom: 1px solid #334155;
+            }}
+
+            h2 {{
+                margin-bottom: 15px;
             }}
         </style>
     </head>
+
     <body>
+    <div class="wrapper">
+
+        <div class="navbar">
+            <a href="/">Home</a>
+            <a href="/generator">Generator</a>
+            <a href="/logs">Logs</a>
+            <a href="/containers">Containers</a>
+        </div>
+
         <h2>Containers</h2>
+
         <div class="box">
             <ul>
                 {items}
             </ul>
         </div>
+
+    </div>
     </body>
     </html>
     """
@@ -320,8 +361,32 @@ def logs():
                 background: #0f172a;
                 color: white;
                 font-family: monospace;
-                padding: 20px;
+                margin: 0;
+                display: flex;
+                justify-content: center;
+                padding: 30px;
             }
+
+            .wrapper {
+                width: 100%;
+                max-width: 1000px;
+            }
+
+            .navbar {
+                margin-bottom: 20px;
+                font-family: Arial;
+            }
+
+            .navbar a {
+                color: #94a3b8;
+                text-decoration: none;
+                margin-right: 15px;
+            }
+
+            .navbar a:hover {
+                color: white;
+            }
+
             .box {
                 background: #1e293b;
                 padding: 20px;
@@ -330,15 +395,27 @@ def logs():
                 overflow-y: scroll;
                 white-space: pre-wrap;
             }
+
+            h2 {
+                margin-bottom: 15px;
+                font-family: Arial;
+            }
         </style>
     </head>
+
     <body>
+    <div class="wrapper">
+
+        <div class="navbar">
+            <a href="/">Home</a>
+            <a href="/generator">Generator</a>
+            <a href="/logs">Logs</a>
+            <a href="/containers">Containers</a>
+        </div>
+
         <h2>Live Logs (real-time)</h2>
 
         <div id="logs" class="box"></div>
-
-        <br>
-        <a href="/">← Back</a>
 
         <script>
             const logBox = document.getElementById("logs");
@@ -363,6 +440,8 @@ def logs():
                 logBox.innerHTML += "<span style='color:red'>[connection lost]</span><br>";
             };
         </script>
+
+    </div>
     </body>
     </html>
     """
