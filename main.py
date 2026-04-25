@@ -312,8 +312,6 @@ def stream_logs():
 
     return StreamingResponse(generate(), media_type="text/event-stream")
 
-
-connectLogs();
     
 @app.post("/api/generate-description")
 async def generate_description(request: Request):
