@@ -106,9 +106,9 @@ def dashboard():
             </div>
         </div>
 
+        <a class="button" href="/generator">AI Description Generator</a>
         <a class="button" href="/containers">View Containers</a>
         <a class="button" href="/logs">View Logs</a>
-        <a class="button" href="/generator">AI Description Generator</a>
 
         <div class="section">
             <h3>• How It Works</h3>
@@ -345,88 +345,144 @@ from fastapi.responses import HTMLResponse
 
 @app.get("/generator", response_class=HTMLResponse)
 def generator_ui():
-        return """
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>AI Product Generator</title>
-            <style>
-                body {
-                    background: #0f172a;
-                    font-family: Arial, sans-serif;
-                    color: white;
-                    display: flex;
-                    justify-content: center;
-                    padding: 40px;
-                }
+    return """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>AI Product Generator</title>
+        <style>
+            body {
+                background: #0f172a;
+                font-family: Arial, sans-serif;
+                color: white;
+                display: flex;
+                justify-content: center;
+                padding: 40px;
+                margin: 0;
+            }
 
-                .container {
-                    width: 600px;
-                    background: #1e293b;
-                    padding: 30px;
-                    border-radius: 12px;
-                    box-shadow: 0 0 20px rgba(0,0,0,0.5);
-                }
+            .wrapper {
+                width: 100%;
+                max-width: 700px;
+            }
 
-                h1 {
-                    text-align: center;
-                    margin-bottom: 20px;
-                }
+            /* NAVBAR */
+            .navbar {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 20px;
+                font-size: 14px;
+            }
 
-                input, textarea, select {
-                    width: 100%;
-                    padding: 12px;
-                    margin-top: 12px;
-                    border-radius: 8px;
-                    border: none;
-                    font-size: 14px;
-                    box-sizing: border-box;
-                }
-                
-                textarea {
-                    resize: none;
-                    height: 140px;
-                }
+            .navbar a {
+                color: #94a3b8;
+                text-decoration: none;
+                margin-right: 15px;
+                transition: 0.2s;
+            }
 
-                button {
-                    width: 100%;
-                    padding: 14px;
-                    margin-top: 16px;
-                    background: #22c55e;
-                    color: white;
-                    border: none;
-                    border-radius: 8px;
-                    font-size: 16px;
-                    cursor: pointer;
-                }
+            .navbar a:hover {
+                color: white;
+            }
 
-                button:hover {
-                    background: #16a34a;
-                }
+            .container {
+                background: #1e293b;
+                padding: 30px;
+                border-radius: 12px;
+                box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            }
 
-                #loader {
-                    display: none;
-                    text-align: center;
-                    margin-top: 15px;
-                }
+            h1 {
+                text-align: center;
+                margin-bottom: 20px;
+            }
 
-                #result {
-                    margin-top: 20px;
-                    background: #0f172a;
-                    padding: 15px;
-                    border-radius: 8px;
-                    white-space: pre-wrap;
-                }
+            input, textarea, select {
+                width: 100%;
+                padding: 12px;
+                margin-top: 12px;
+                border-radius: 8px;
+                border: none;
+                font-size: 14px;
+                box-sizing: border-box;
+            }
+            
+            textarea {
+                resize: none;
+                height: 140px;
+            }
 
-                .copy-btn {
-                    margin-top: 10px;
-                    background: #3b82f6;
-                }
-            </style>
-        </head>
-        <body>
+            button {
+                width: 100%;
+                padding: 14px;
+                margin-top: 16px;
+                background: #22c55e;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                font-size: 16px;
+                cursor: pointer;
+            }
+
+            button:hover {
+                background: #16a34a;
+            }
+
+            #loader {
+                display: none;
+                text-align: center;
+                margin-top: 15px;
+                color: #94a3b8;
+            }
+
+            #result {
+                margin-top: 20px;
+                background: #0f172a;
+                padding: 15px;
+                border-radius: 8px;
+                white-space: pre-wrap;
+                min-height: 80px;
+            }
+
+            .copy-btn {
+                margin-top: 10px;
+                background: #3b82f6;
+            }
+
+            .copy-btn:hover {
+                background: #2563eb;
+            }
+
+            .back-btn {
+                display: inline-block;
+                margin-bottom: 10px;
+                color: #94a3b8;
+                text-decoration: none;
+                font-size: 14px;
+            }
+
+            .back-btn:hover {
+                color: white;
+            }
+        </style>
+    </head>
+    <body>
+
+    <div class="wrapper">
+
+        <!-- NAVBAR -->
+        <div class="navbar">
+            <div>
+                <a href="/">Home</a>
+                <a href="/generator">Generator</a>
+                <a href="/logs">Logs</a>
+                <a href="/containers">Containers</a>
+            </div>
+        </div>
 
         <div class="container">
+            <a href="/" class="back-btn">← Back</a>
+
             <h1>AI Product Description Generator</h1>
 
             <input id="name" placeholder="Product name" />
@@ -440,21 +496,24 @@ def generator_ui():
 
             <button onclick="generate()">Generate</button>
 
-            <div id="loader">AI is thinking...</div>
+            <div id="loader">AI is generating your description...</div>
 
             <div id="result"></div>
             <button class="copy-btn" onclick="copyText()">Copy</button>
         </div>
 
-        <script>
-        async function generate() {
-            const name = document.getElementById("name").value;
-            const features = document.getElementById("features").value;
-            const tone = document.getElementById("tone").value;
+    </div>
 
-            document.getElementById("loader").style.display = "block";
-            document.getElementById("result").innerText = "";
+    <script>
+    async function generate() {
+        const name = document.getElementById("name").value;
+        const features = document.getElementById("features").value;
+        const tone = document.getElementById("tone").value;
 
+        document.getElementById("loader").style.display = "block";
+        document.getElementById("result").innerText = "";
+
+        try {
             const res = await fetch("/api/generate-description", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -463,16 +522,24 @@ def generator_ui():
 
             const data = await res.json();
 
-            document.getElementById("loader").style.display = "none";
             document.getElementById("result").innerText = data.description;
+        } catch (err) {
+            document.getElementById("result").innerText = "Error generating description.";
         }
 
-        function copyText() {
-            const text = document.getElementById("result").innerText;
-            navigator.clipboard.writeText(text);
-        }
-        </script>
+        document.getElementById("loader").style.display = "none";
+    }
 
-        </body>
-        </html>
-        """
+    function copyText() {
+        const text = document.getElementById("result").innerText;
+        navigator.clipboard.writeText(text);
+
+        const btn = document.querySelector(".copy-btn");
+        btn.innerText = "Copied!";
+        setTimeout(() => btn.innerText = "Copy", 1500);
+    }
+    </script>
+
+    </body>
+    </html>
+    """
