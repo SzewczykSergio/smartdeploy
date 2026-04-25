@@ -294,7 +294,7 @@ def stream_logs():
     def generate():
         try:
             process = subprocess.Popen(
-                ["docker", "logs", "-f", "--tail", "50", "smartdeploy-app"],
+                ["docker", "logs", "-f", "--tail", "50", "smartdeploy-app-new"],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
                 text=True,
