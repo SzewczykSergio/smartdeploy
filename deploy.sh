@@ -25,6 +25,7 @@ docker run -d \
   --name smartdeploy-app-new \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v /home/devops/smartdeploy:/app_host \
+  -e OPENAI_API_KEY=$OPENAI_API_KEY \
   smartdeploy:latest || { echo "Failed to start container"; exit 1; }
 
 echo "Deployment finished successfully!"
