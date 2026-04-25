@@ -426,7 +426,7 @@ def generator_ui():
             <h1>AI Product Description Generator</h1>
 
             <input id="name" placeholder="Product name" />
-            <textarea id="features" placeholder="Features"></textarea>
+            <textarea id="features" placeholder="Features (comma separated"></textarea>
 
             <select id="tone">
                 <option value="professional">Professional</option>
